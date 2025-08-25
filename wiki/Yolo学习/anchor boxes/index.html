@@ -3,21 +3,26 @@
 <head>
     <meta charset="utf-8">
     
-    <title>About | Hexo</title>
+    <title>anchor box（先验框） | Hexo</title>
     
     
-        <meta name="keywords" content="About" />
+        <meta name="keywords" content="anchor box（先验框）" />
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta property="og:type" content="website">
-<meta property="og:title" content="About">
-<meta property="og:url" content="http://example.com/about/index.html">
+    <meta name="description" content="anchor box（先验框）anchor （锚; 给以安全感的人(或物); 精神支柱; 顶梁柱;） 为什么对象检测中存在一个问题就是每个格子只能预测一个对象，如果想让一个格子检测出多个对象，用anchor box 以前的做法假设我们有这样一张图片，对于这个例子，我们使用3x3的网格，可以观察到，行人和汽车的中心几乎在同一个网格，然而我们以前的方法一个格子只能预测一个对象，而且对于y输出的的向量量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="anchor box（先验框）">
+<meta property="og:url" content="http://example.com/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="anchor box（先验框）anchor （锚; 给以安全感的人(或物); 精神支柱; 顶梁柱;） 为什么对象检测中存在一个问题就是每个格子只能预测一个对象，如果想让一个格子检测出多个对象，用anchor box 以前的做法假设我们有这样一张图片，对于这个例子，我们使用3x3的网格，可以观察到，行人和汽车的中心几乎在同一个网格，然而我们以前的方法一个格子只能预测一个对象，而且对于y输出的的向量量">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2025-08-11T20:07:15.961Z">
-<meta property="article:modified_time" content="2025-08-11T20:07:15.961Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200208232504699.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDYyMzYzNw==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020020823275943.png">
+<meta property="article:published_time" content="2025-08-10T08:34:27.000Z">
+<meta property="article:modified_time" content="2025-08-24T18:32:30.000Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200208232504699.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDYyMzYzNw==,size_16,color_FFFFFF,t_70">
     
 
     
@@ -176,13 +181,13 @@
         
         
          <ul class="unstyled" id="tree" > 
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             Yolo学习
                         </a>
-                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a></li>  </ul> 
+                         <ul class="unstyled" id="tree" >  <li class="file active"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a></li>  </ul> 
                     </li> 
                      </ul> 
     </div>
@@ -255,16 +260,50 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-Yolo学习/anchor boxes" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
             <header class="article-header">
                 
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">
+            <time datetime="2025-08-10T08:34:27.000Z" itemprop="datePublished">2025-08-10</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/anchor boxes.md'> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/anchor boxes.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/anchor boxes.md'> History </a>
+                            </div>
+                        
+                    </div>
+                
                 
     
         <h1 class="article-title" itemprop="name">
-            About
+            anchor box（先验框）
         </h1>
     
 
@@ -275,9 +314,31 @@
         
         
             
-        
-        
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">Catalogue</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#anchor-box%EF%BC%88%E5%85%88%E9%AA%8C%E6%A1%86%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">anchor box（先验框）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">为什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%89%8D%E7%9A%84%E5%81%9A%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">以前的做法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#anchor-box-%E5%BC%95%E5%85%A5"><span class="toc-number">1.3.</span> <span class="toc-text">anchor box 引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E8%B6%B3"><span class="toc-number">1.5.</span> <span class="toc-text">不足</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E9%80%89box%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">怎么选box？</span></a></li></ol></li></ol>
+                </div>
             
+        
+        
+            <h1 id="anchor-box（先验框）"><a href="#anchor-box（先验框）" class="headerlink" title="anchor box（先验框）"></a>anchor box（先验框）</h1><p>anchor （锚; 给以安全感的人(或物); 精神支柱; 顶梁柱;）</p>
+<h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>对象检测中存在一个问题就是每个格子只能预测一个对象，如果想让一个格子检测出多个对象，用anchor box</p>
+<h2 id="以前的做法"><a href="#以前的做法" class="headerlink" title="以前的做法"></a>以前的做法</h2><p>假设我们有这样一张图片，对于这个例子，我们使用3x3的网格，可以观察到，行人和汽车的中心几乎在同一个网格，然而我们以前的方法一个格子只能预测一个对象，而且对于y输出的的向量量𝑦 &#x3D; [𝑝𝑐 𝑏𝑥 𝑏𝑦 𝑏ℎ 𝑏𝑤 𝑐1 𝑐2 𝑐3 ]，你可以检测这三个类别，行人、汽车和摩托车，它将无法输出检测结果，所以我必须从两个检测结果中选一个，这便影响了模型性能，导致一些对象被丢弃无法检测出来。<br><img src="https://img-blog.csdnimg.cn/20200208232504699.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDYyMzYzNw==,size_16,color_FFFFFF,t_70" alt="img"></p>
+<h2 id="anchor-box-引入"><a href="#anchor-box-引入" class="headerlink" title="anchor box 引入"></a>anchor box 引入</h2><p><img src="https://img-blog.csdnimg.cn/2020020823275943.png" alt="img"></p>
+<p>预先定义两个不同形状的 anchor box，或者 anchor box 形状</p>
+<p>一般来说，可能会用更多的 anchor box，可能要 5 个甚至更多，为介绍方便就用两个 anchor box</p>
+<p>定义类别标签，用的向量不再是下面这个：<br>[𝑝𝑐 𝑏𝑥 𝑏𝑦 𝑏ℎ 𝑏𝑤 𝑐1 𝑐2 𝑐3]𝑇</p>
+<p>而是输出重复两次：</p>
+<p>𝑦 &#x3D; [𝑝𝑐 𝑏𝑥 𝑏𝑦 𝑏ℎ 𝑏𝑤 𝑐1 𝑐2 𝑐3 𝑝𝑐 𝑏𝑥 𝑏𝑦 𝑏ℎ 𝑏𝑤 𝑐1 𝑐2 𝑐3]𝑇</p>
+<p>前一半是box1后一半是box2</p>
+<p>行人一般符合anchor box1形状，所以用anchor box1来预测行人会达到很好的效果，这么编码𝑝𝑐 &#x3D; 1，代表有个行人，用𝑏𝑥,𝑏𝑦,𝑏ℎ和𝑏𝑤来编码包住行人的边界框，然后用𝑐1,𝑐2,𝑐3(𝑐1 &#x3D; 1,𝑐2 &#x3D; 0,𝑐3 &#x3D; 0)来说明这个对象是个行人。<br>汽车一般是box2，方式同理</p>
+<p><strong>文章没说编码完一部分后剩下的怎么处理</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>所以，总的来说，anchor box是这么来做的，现在每个对象和以前一样根据中心点分配到一个格子中，然后看和每个anchor box的IoU（交并比），选择IoU最高的那个，用这个anchor box来进行预测。输出y的维度是<strong>n</strong>x<strong>n</strong>x<strong>m</strong>x<strong>c</strong>（<strong>n</strong>为图片分成<strong>n</strong>x<strong>n</strong>份，<strong>m</strong>为anchor box数量，<strong>c</strong>为class类别数）</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>1.两个 anchor box，但在同一个格子中有三个对象，这种情况算法处理不好，你希望这种情况不会发生，但如果真的发生了，这个算法并没有很好的处理办法</p>
+<p>2.两个对象都分配到一个格子中，而且它们的 anchor box 形状也一样，也不好办</p>
+<p><strong>看文章说其实这两种情况很少出现</strong>，特别是如果你用的是 19×19 网格而不是3×3 的网格</p>
+<h2 id="怎么选box？"><a href="#怎么选box？" class="headerlink" title="怎么选box？"></a>怎么选box？</h2><p>1.一般手工指定anchor box形状，根据要检测的对象，指定有针对性地anchor box，可选择5-10个anchor box，使其尽可能覆盖到不同形状。<br>2.使用K-means聚类算法获得anchor box。</p>
+
             </div>
         
         <footer class="article-footer">
@@ -287,6 +348,20 @@
 
 
     
+<nav id="article-nav">
+    
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    yolov1 具体网络结构
+                
+            </div>
+        </a>
+    
+    
+</nav>
+
 
 
 

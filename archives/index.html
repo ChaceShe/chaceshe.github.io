@@ -162,6 +162,93 @@
                 <aside id="sidebar">
    
         
+    <div class="widget-wrap" id='categories'>
+        <h3 class="widget-title">
+            <span>categories</span>
+            &nbsp;
+            <a id='allExpand' href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Yolo学习
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
     
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
@@ -175,7 +262,7 @@
     
             <div class="timeline-row timeline-row-major">
                 <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2025/08/">2025-08</a><span class="archive-list-count">1</span></h1>
+                <h1 class="title"><a href="/archives/2025/08/">2025-08</a><span class="archive-list-count">5</span></h1>
             </div>
     
         <div class="timeline-row">
@@ -184,7 +271,7 @@
                 
     
         <h1 itemprop="name">
-            <a class="timeline-article-title" href="/wiki/hello-world/">Hello World</a>
+            <a class="timeline-article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a>
         </h1>
     
 
@@ -193,13 +280,150 @@
                     
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/hello-world/">
-            <time datetime="2025-08-11T18:44:32.622Z" itemprop="datePublished">2025-08-12</time>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">
+            <time datetime="2025-08-20T13:01:27.000Z" itemprop="datePublished">2025-08-20</time>
         </a>
     </div>
 
 
                     
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                    
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="timeline-row">
+            <span class="node"></span>
+            <div class="content">
+                
+    
+        <h1 itemprop="name">
+            <a class="timeline-article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a>
+        </h1>
+    
+
+                
+                <div class="article-meta">
+                    
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">
+            <time datetime="2025-08-15T08:34:27.000Z" itemprop="datePublished">2025-08-15</time>
+        </a>
+    </div>
+
+
+                    
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                    
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="timeline-row">
+            <span class="node"></span>
+            <div class="content">
+                
+    
+        <h1 itemprop="name">
+            <a class="timeline-article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a>
+        </h1>
+    
+
+                
+                <div class="article-meta">
+                    
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">
+            <time datetime="2025-08-13T10:34:27.000Z" itemprop="datePublished">2025-08-13</time>
+        </a>
+    </div>
+
+
+                    
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                    
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="timeline-row">
+            <span class="node"></span>
+            <div class="content">
+                
+    
+        <h1 itemprop="name">
+            <a class="timeline-article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a>
+        </h1>
+    
+
+                
+                <div class="article-meta">
+                    
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">
+            <time datetime="2025-08-12T08:34:27.000Z" itemprop="datePublished">2025-08-12</time>
+        </a>
+    </div>
+
+
+                    
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                    
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="timeline-row">
+            <span class="node"></span>
+            <div class="content">
+                
+    
+        <h1 itemprop="name">
+            <a class="timeline-article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a>
+        </h1>
+    
+
+                
+                <div class="article-meta">
+                    
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">
+            <time datetime="2025-08-10T08:34:27.000Z" itemprop="datePublished">2025-08-10</time>
+        </a>
+    </div>
+
+
+                    
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
                     
                 </div>
                 

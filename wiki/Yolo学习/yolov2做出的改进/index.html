@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>yolov2做出的改进 | Hexo</title>
+    
+    
+        <meta name="keywords" content="yolov2做出的改进" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="yolov1的缺点YOLOv1虽然检测速度很快，但是在检测精度上却不如R-CNN系检测方法，YOLOv1在物体定位方面（localization）不够准确，并且召回率（recall）较低。 解决方法1.Batch NormalizaBatch Normalization可以提升模型收敛速度，而且可以起到一定正则化效果，降低模型的过拟合。在YOLOv2中，每个卷积层后面都添加了Batch Norma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yolov2做出的改进">
+<meta property="og:url" content="http://example.com/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="yolov1的缺点YOLOv1虽然检测速度很快，但是在检测精度上却不如R-CNN系检测方法，YOLOv1在物体定位方面（localization）不够准确，并且召回率（recall）较低。 解决方法1.Batch NormalizaBatch Normalization可以提升模型收敛速度，而且可以起到一定正则化效果，降低模型的过拟合。在YOLOv2中，每个卷积层后面都添加了Batch Norma">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes2">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes%5Ctext%7Bnum_anchors%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=d(box,+centroid)+=+1+-+IOU(box,+centroid)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=3%5Ctimes3">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=2%5Ctimes2">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=3%5Ctimes3">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=1%5Ctimes1">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(x,y)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(t_x,+t_y)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(w_a,+h_a)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(x_a,+y_a)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cx+=+(t_x%5Ctimes+w_a)-x_a">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cy=(t_y%5Ctimes+h_a)+-+y_a">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=t_x=1">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=t_x=-1">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=t_x,+t_y,+t_w,+t_h">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cb_x+=+%5Csigma+(t_x)+c_x">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cb_y+=+%5Csigma+(t_y)+++c_y">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cb_w+=+p_we%5E%7Bt_w%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cb_h+=+p_he%5E%7Bt_h%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(c_x,+x_y)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(1,1)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=p_w">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=p_h">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(W,+H)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=(13,+13)">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cb_x+=+(%5Csigma+(t_x)+c_x)/W">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5C+b_y+=+(%5Csigma+(t_y)+++c_y)/H">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%5Cb_w+=+p_we%5E%7Bt_w%7D/W">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=+%5C%5Cb_h+=+p_he%5E%7Bt_h%7D/H">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-7fee941c2e347efc2a3b19702a4acd8e_r.jpg">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=13%5Ctimes13">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=26%5Ctimes26">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes512">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=2%5Ctimes2">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes512">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes2048">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes1024">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes3072">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-c94c787a81c1216d8963f7c173c6f086_r.jpg">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=1%5Ctimes1">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes512">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes256">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=416%5Ctimes416">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5C%7B320,+352,...,+608%5C%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=320%5Ctimes320">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=10%5Ctimes10">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=608%5Ctimes608">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=19%5Ctimes19">
+<meta property="article:published_time" content="2025-08-15T08:34:27.000Z">
+<meta property="article:modified_time" content="2025-08-24T20:16:56.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes2">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/favicon.ico" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Hexo</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id='categories'>
+        <h3 class="widget-title">
+            <span>categories</span>
+            &nbsp;
+            <a id='allExpand' href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree" > 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            Yolo学习
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a></li>  <li class="file active"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-Yolo学习/yolov2做出的改进" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">
+            <time datetime="2025-08-15T08:34:27.000Z" itemprop="datePublished">2025-08-15</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/yolov2做出的改进.md'> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/yolov2做出的改进.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/yolov2做出的改进.md'> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            yolov2做出的改进
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">Catalogue</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#yolov1%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">yolov1的缺点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">解决方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Batch-Normaliza"><span class="toc-number">2.0.1.</span> <span class="toc-text">1.Batch Normaliza</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-High-Resolution-Classifier"><span class="toc-number">2.0.2.</span> <span class="toc-text">2.High Resolution Classifier</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Convolutional-With-Anchor-Boxes"><span class="toc-number">2.0.3.</span> <span class="toc-text">3.Convolutional With Anchor Boxes</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A5%E5%89%8D-yolo1%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">以前 yolo1存在的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%B9%E8%BF%9B%E6%80%9D%E8%B7%AF"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">改进思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Dimension-Clusters"><span class="toc-number">2.0.4.</span> <span class="toc-text">4.Dimension Clusters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-New-Network-Darknet-19"><span class="toc-number">2.0.5.</span> <span class="toc-text">5.New Network: Darknet-19</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87"><span class="toc-number">2.0.5.1.</span> <span class="toc-text">性能提升</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Direct-location-prediction"><span class="toc-number">2.0.6.</span> <span class="toc-text">6.Direct location prediction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Fine-Grained-Features"><span class="toc-number">2.0.7.</span> <span class="toc-text">7.Fine-Grained Features</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-Multi-Scale-Training"><span class="toc-number">2.0.8.</span> <span class="toc-text">8.Multi-Scale Training</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <h1 id="yolov1的缺点"><a href="#yolov1的缺点" class="headerlink" title="yolov1的缺点"></a>yolov1的缺点</h1><p>YOLOv1虽然检测速度很快，但是在检测精度上却不如R-CNN系检测方法，YOLOv1在物体定位方面（localization）不够准确，并且召回率（recall）较低。</p>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><h3 id="1-Batch-Normaliza"><a href="#1-Batch-Normaliza" class="headerlink" title="1.Batch Normaliza"></a>1.Batch Normaliza</h3><p>Batch Normalization可以提升模型收敛速度，而且可以起到一定正则化效果，降低模型的过拟合。在YOLOv2中，每个卷积层后面都添加了Batch Normalization层，并且不再使用droput。使用Batch Normalization后，YOLOv2的mAP提升了2.4%。</p>
+<h3 id="2-High-Resolution-Classifier"><a href="#2-High-Resolution-Classifier" class="headerlink" title="2.High Resolution Classifier"></a>2.<strong>High Resolution Classifier</strong></h3><p>用更高分辨率的输入（448x448）之前是（224x224）。</p>
+<h3 id="3-Convolutional-With-Anchor-Boxes"><a href="#3-Convolutional-With-Anchor-Boxes" class="headerlink" title="3.Convolutional With Anchor Boxes"></a>3.<strong>Convolutional With Anchor Boxes</strong></h3><h4 id="以前-yolo1存在的问题"><a href="#以前-yolo1存在的问题" class="headerlink" title="以前 yolo1存在的问题"></a>以前 yolo1存在的问题</h4><p>在YOLOv1中，输入图片最终被划分为$7\times 7$ 网格，每个单元格预测2个边界框。YOLOv1最后采用的是全连接层直接对边界框进行预测，其中边界框的宽与高是相对整张图片大小的，而由于各个图片中存在不同尺度和长宽比（scales and ratios)的物体，YOLOv1在训练过程中学习适应不同物体的形状是比较困难的，这也导致YOLOv1在精确定位方面表现较差。</p>
+<h4 id="改进思路"><a href="#改进思路" class="headerlink" title="改进思路"></a>改进思路</h4><p>用anchor boxes（先验框）</p>
+<p>采用先验框使得模型更容易学习。所以YOLOv2移除了YOLOv1中的全连接层而采用了卷积和anchor boxes来预测边界框。</p>
+<h4 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h4><p>使用anchor boxes之后，YOLOv2的mAP有稍微下降（这里下降的原因，我猜想是YOLOv2虽然使用了anchor boxes，但是依然采用YOLOv1的训练方法）。YOLOv1只能预测98个边界框（ <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes2" alt="[公式]"> ），而YOLOv2使用anchor boxes之后可以预测上千个边界框（ <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes%5Ctext%7Bnum_anchors%7D" alt="[公式]"> )。所以使用anchor boxes之后，YOLOv2的召回率大大提升，由原来的81%升至88%。</p>
+<h3 id="4-Dimension-Clusters"><a href="#4-Dimension-Clusters" class="headerlink" title="4.Dimension Clusters"></a>4.<strong>Dimension Clusters</strong></h3><p>先验框的维度（长和宽）都是手动设定的，带有一定的主观性。如果选取的先验框维度比较合适，那么模型更容易学习，从而做出更好的预测。因此，YOLOv2采用k-means聚类方法对训练集中的边界框做了聚类分析。</p>
+<p><strong>聚类分析怎么做的我还没有看</strong></p>
+<p>因为设置先验框的主要目的是为了使得预测框与ground truth的IOU更好，所以聚类分析时选用box与聚类中心box之间的IOU值作为距离指标：</p>
+<p><img src="https://www.zhihu.com/equation?tex=d(box,+centroid)+=+1+-+IOU(box,+centroid)" alt="[公式]"></p>
+<h3 id="5-New-Network-Darknet-19"><a href="#5-New-Network-Darknet-19" class="headerlink" title="5.New Network: Darknet-19"></a>5.<strong>New Network: Darknet-19</strong></h3><p>YOLOv2采用了一个新的基础模型（特征提取器），称为Darknet-19，包括19个卷积层和5个maxpooling层，如图4所示。Darknet-19与VGG16模型设计原则是一致的，主要采用 <img src="https://www.zhihu.com/equation?tex=3%5Ctimes3" alt="[公式]"> 卷积，采用 <img src="https://www.zhihu.com/equation?tex=2%5Ctimes2" alt="[公式]"> 的maxpooling层之后，特征图维度降低2倍，而同时将特征图的channles增加两倍。与NIN(<a href="https://link.zhihu.com/?target=https://arxiv.org/abs/1312.4400">Network in Network</a>)类似，Darknet-19最终采用global avgpooling做预测，并且在 <img src="https://www.zhihu.com/equation?tex=3%5Ctimes3" alt="[公式]"> 卷积之间使用 <img src="https://www.zhihu.com/equation?tex=1%5Ctimes1" alt="[公式]"> 卷积来压缩特征图channles以降低模型计算量和参数。Darknet-19每个卷积层后面同样使用了batch norm层以加快收敛速度，降低模型过拟合。</p>
+<h4 id="性能提升"><a href="#性能提升" class="headerlink" title="性能提升"></a>性能提升</h4><p>在ImageNet分类数据集上，Darknet-19的top-1准确度为72.9%，top-5准确度为91.2%，但是模型参数相对小一些。使用Darknet-19之后，YOLOv2的mAP值没有显著提升，但是计算量却可以减少约33%。</p>
+<h3 id="6-Direct-location-prediction"><a href="#6-Direct-location-prediction" class="headerlink" title="6.Direct location prediction"></a>6.<strong>Direct location prediction</strong></h3><p>前面讲到，YOLOv2借鉴RPN网络使用anchor boxes来预测边界框相对先验框的offsets。边界框的实际中心位置 <img src="https://www.zhihu.com/equation?tex=(x,y)" alt="[公式]"> ，需要根据预测的坐标偏移值 <img src="https://www.zhihu.com/equation?tex=(t_x,+t_y)" alt="[公式]"> ，先验框的尺度 <img src="https://www.zhihu.com/equation?tex=(w_a,+h_a)" alt="[公式]"> 以及中心坐标 <img src="https://www.zhihu.com/equation?tex=(x_a,+y_a)" alt="[公式]"> （特征图每个位置的中心点）来计算：</p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cx+=+(t_x%5Ctimes+w_a)-x_a" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cy=(t_y%5Ctimes+h_a)+-+y_a" alt="[公式]"></p>
+<p>但是上面的公式是无约束的，预测的边界框很容易向任何方向偏移，如当 <img src="https://www.zhihu.com/equation?tex=t_x=1" alt="[公式]"> 时边界框将向右偏移先验框的一个宽度大小，而当 <img src="https://www.zhihu.com/equation?tex=t_x=-1" alt="[公式]"> 时边界框将向左偏移先验框的一个宽度大小，因此每个位置预测的边界框可以落在图片任何位置，这导致模型的不稳定性，在训练时需要很长时间来预测出正确的offsets。</p>
+<p>所以，YOLOv2弃用了这种预测方式，而是沿用YOLOv1的方法，就是<strong>预测边界框中心点相对于对应cell左上角位置的相对偏移值</strong>，为了<strong>将边界框中心点约束在当前cell中，使用sigmoid函数处理偏移值</strong>，这样预测的偏移值在(0,1)范围内（每个cell的尺度看做1）。总结来看，根据边界框预测的4个offsets <img src="https://www.zhihu.com/equation?tex=t_x,+t_y,+t_w,+t_h" alt="[公式]"> ，可以按如下公式计算出边界框实际位置和大小：</p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cb_x+=+%5Csigma+(t_x)+c_x" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cb_y+=+%5Csigma+(t_y)+++c_y" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cb_w+=+p_we%5E%7Bt_w%7D" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cb_h+=+p_he%5E%7Bt_h%7D" alt="[公式]"></p>
+<p>其中 <img src="https://www.zhihu.com/equation?tex=(c_x,+x_y)" alt="[公式]"> 为cell的左上角坐标，如图5所示，在计算时每个cell的尺度为1，所以当前cell的左上角坐标为 <img src="https://www.zhihu.com/equation?tex=(1,1)" alt="[公式]"> 。由于sigmoid函数的处理，边界框的中心位置会约束在当前cell内部，防止偏移过多。而 <img src="https://www.zhihu.com/equation?tex=p_w" alt="[公式]"> 和 <img src="https://www.zhihu.com/equation?tex=p_h" alt="[公式]"> 是先验框的宽度与长度，前面说过它们的值也是相对于特征图大小的，在特征图中每个cell的长和宽均为1。这里记特征图的大小为 <img src="https://www.zhihu.com/equation?tex=(W,+H)" alt="[公式]"> （在文中是 <img src="https://www.zhihu.com/equation?tex=(13,+13)" alt="[公式]"> )，这样我们可以将边界框相对于整张图片的位置和大小计算出来（4个值均在0和1之间）：</p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cb_x+=+(%5Csigma+(t_x)+c_x)/W" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5C+b_y+=+(%5Csigma+(t_y)+++c_y)/H" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5C%5Cb_w+=+p_we%5E%7Bt_w%7D/W" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=+%5C%5Cb_h+=+p_he%5E%7Bt_h%7D/H" alt="[公式]"></p>
+<p>如果再将上面的4个值分别乘以图片的宽度和长度（像素点值）就可以得到边界框的最终位置和大小了。这就是YOLOv2边界框的整个解码过程。约束了边界框的位置预测值使得模型更容易稳定训练，结合聚类分析得到先验框与这种预测方法，YOLOv2的mAP值提升了约5%。</p>
+<p><img src="https://pic3.zhimg.com/v2-7fee941c2e347efc2a3b19702a4acd8e_r.jpg" alt="preview"></p>
+<h3 id="7-Fine-Grained-Features"><a href="#7-Fine-Grained-Features" class="headerlink" title="7.Fine-Grained Features"></a>7.<strong>Fine-Grained Features</strong></h3><p>YOLOv2的输入图片大小为$416\times 416$  ，经过5次maxpooling之后得到$13\times 13$大小的特征图，并以此特征图采用卷积做预测。<img src="https://www.zhihu.com/equation?tex=13%5Ctimes13" alt="[公式]"> 大小的特征图对检测大物体是足够了，但是对于小物体还需要更精细的特征图（Fine-Grained Features)。</p>
+<p>YOLOv2所利用的Fine-Grained Features是 <img src="https://www.zhihu.com/equation?tex=26%5Ctimes26" alt="[公式]"> 大小的特征图（最后一个maxpooling层的输入），对于Darknet-19模型来说就是大小为 <img src="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes512" alt="[公式]"> 的特征图。passthrough层与ResNet网络的shortcut类似，以前面更高分辨率的特征图为输入，然后将其连接到后面的低分辨率特征图上。前面的特征图维度是后面的特征图的2倍，passthrough层抽取前面层的每个 <img src="https://www.zhihu.com/equation?tex=2%5Ctimes2" alt="[公式]"> 的局部区域，然后将其转化为channel维度，对于 <img src="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes512" alt="[公式]"> 的特征图，经passthrough层处理之后就变成了 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes2048" alt="[公式]"> 的新特征图（特征图大小降低4倍，而channles增加4倍，图6为一个实例），这样就可以与后面的 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes1024" alt="[公式]"> 特征图连接在一起形成 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes3072" alt="[公式]"> 大小的特征图，然后在此特征图基础上卷积做预测。</p>
+<p><img src="https://pic3.zhimg.com/v2-c94c787a81c1216d8963f7c173c6f086_r.jpg" alt="preview"></p>
+<p>另外，作者在后期的实现中借鉴了ResNet网络，不是直接对高分辨特征图处理，而是增加了一个中间卷积层，先采用64个 <img src="https://www.zhihu.com/equation?tex=1%5Ctimes1" alt="[公式]"> 卷积核进行卷积，然后再进行passthrough处理，这样 <img src="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes512" alt="[公式]"> 的特征图得到 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes256" alt="[公式]"> 的特征图。这算是实现上的一个小细节。使用Fine-Grained Features之后YOLOv2的性能有1%的提升。</p>
+<h3 id="8-Multi-Scale-Training"><a href="#8-Multi-Scale-Training" class="headerlink" title="8.Multi-Scale Training"></a>8.<strong>Multi-Scale Training</strong></h3><p>由于YOLOv2模型中只有卷积层和池化层，所以YOLOv2的输入可以不限于 <img src="https://www.zhihu.com/equation?tex=416%5Ctimes416" alt="[公式]"> 大小的图片。为了增强模型的鲁棒性，YOLOv2采用了多尺度输入训练策略，具体来说就是在训练过程中每间隔一定的iterations之后改变模型的输入图片大小。</p>
+<p>由于YOLOv2的下采样总步长为32，输入图片大小选择一系列为32倍数的值： <img src="https://www.zhihu.com/equation?tex=%5C%7B320,+352,...,+608%5C%7D" alt="[公式]"> ，输入图片最小为 <img src="https://www.zhihu.com/equation?tex=320%5Ctimes320" alt="[公式]"> ，此时对应的特征图大小为 <img src="https://www.zhihu.com/equation?tex=10%5Ctimes10" alt="[公式]"> （不是奇数了，确实有点尴尬），而输入图片最大为 <img src="https://www.zhihu.com/equation?tex=608%5Ctimes608" alt="[公式]"> ，对应的特征图大小为 <img src="https://www.zhihu.com/equation?tex=19%5Ctimes19" alt="[公式]"> 。在训练过程，每隔10个iterations随机选择一种输入图片大小，然后只需要修改对最后检测层的处理就可以重新训练。</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    YOLOv3 model.py代码的简单分析注解
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">yolo1 思想与输出的形式</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            John Doe &copy; 2025 
+            <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme - <a target="_blank" rel="noopener" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

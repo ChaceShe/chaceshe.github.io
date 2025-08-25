@@ -162,12 +162,99 @@
                 <aside id="sidebar">
    
         
+    <div class="widget-wrap" id='categories'>
+        <h3 class="widget-title">
+            <span>categories</span>
+            &nbsp;
+            <a id='allExpand' href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree" > 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Yolo学习
+                        </a>
+                         <ul class="unstyled" id="tree" >  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a></li>  <li class="file"><a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
     
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
             <section id="main">
-        <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-Yolo学习/YOLOv3" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -175,12 +262,17 @@
                 
                     <div class="article-meta">
                         
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
                         
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/wiki/hello-world/">
-            <time datetime="2025-08-11T18:44:32.622Z" itemprop="datePublished">2025-08-12</time>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">
+            <time datetime="2025-08-20T13:01:27.000Z" itemprop="datePublished">2025-08-20</time>
         </a>
     </div>
 
@@ -191,13 +283,13 @@
                         
                         
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/hello-world.md'> Source </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/YOLOv3.md'> Source </a>
                             </div>
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/hello-world.md'> Edit </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/YOLOv3.md'> Edit </a>
                             </div>
                             <div class="article-meta-button">
-                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/hello-world.md'> History </a>
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/YOLOv3.md'> History </a>
                             </div>
                         
                     </div>
@@ -205,7 +297,7 @@
                 
     
         <h1 itemprop="name">
-            <a class="article-title" href="/wiki/hello-world/">Hello World</a>
+            <a class="article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/">YOLOv3 model.py代码的简单分析注解</a>
         </h1>
     
 
@@ -235,11 +327,11 @@
                 
                 
                     
-                    <p><p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+                    <p><h1 id="YOLOv3-model-py代码的简单分析注解"><a href="#YOLOv3-model-py代码的简单分析注解" class="headerlink" title="YOLOv3 model.py代码的简单分析注解"></a>YOLOv3 model.py代码的简单分析注解</h1><h2 id="准备"><a href="#准备" class="headerlink" title="&gt; 准备"></a>&gt; 准备</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> K</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Conv2D, Add, ZeroPadding2D, UpSampling2D, Concatenate, MaxPooling2D</span><br><span class="line"><span class="keyword">from</span> keras.layers.advanced_activations <span class="keyword">import</span> LeakyReLU</span><br><span class="line"><span class="keyword">from</span> keras.layers.normalization <span class="keyword">import</span> BatchNormalization</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Model</span><br><span class="line"><span class="keyword">from</span> keras.regularizers <span class="keyword">import</span> l2</span><br><span class="line"><span class="keyword">from</span> yolo3.utils <span class="keyword">import</span> compose</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h2 id="YOLO网络"><a href="#YOLO网络" class="headerlink" title="&gt; YOLO网络"></a>&gt; YOLO网络</h2><h4 id="首先要通过特征提取网络对输入的输入图像提取特征，得到不同尺寸的特征图"><a href="#首先要通过特征提取网络对输入的输入图像提取特征，得到不同尺寸的特征图" class="headerlink" title="首先要通过特征提取网络对输入的输入图像提取特征，得到不同尺寸的特征图"></a>首先要通过特征提取网络对输入的输入图像提取特征，得到不同尺寸的特征图</h4><pre><code>### 代码
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@wraps(<span class="params">Conv2D</span>)</span><span class="comment">#@wraps在此处的作用是为了使DarknetConv2D.__name__和DarknetConv2D.__doc__与Conv2D__name__和Conv2D.__doc__相同。</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">DarknetConv2D</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Wrapper to set Darknet parameters for Convolution2D.&quot;&quot;&quot;</span></span><br><span class="line">    darknet_conv_kwargs = &#123;<span class="string">&#x27;kernel_regularizer&#x27;</span>: l2(<span class="number">5e-4</span>)&#125;</span><br><span class="line">    darknet_conv_kwargs[<span class="string">&#x27;padding&#x27;</span>] = <span class="string">&#x27;valid&#x27;</span> <span class="keyword">if</span> kwargs.get(<span class="string">&#x27;strides&#x27;</span>)==(<span class="number">2</span>,<span class="number">2</span>) <span class="keyword">else</span> <span class="string">&#x27;same&#x27;</span></span><br><span class="line">    darknet_conv_kwargs.update(kwargs)</span><br><span class="line">    <span class="keyword">return</span> Conv2D(*args, **darknet_conv_kwargs)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">DarknetConv2D_BN_Leaky</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Darknet Convolution2D followed by BatchNormalization and LeakyReLU.&quot;&quot;&quot;</span></span><br><span class="line">    no_bias_kwargs = &#123;<span class="string">&#x27;use_bias&#x27;</span>: <span class="literal">False</span>&#125;</span><br><span class="line">    no_bias_kwargs.update(kwargs)</span><br><span class="line">    <span class="keyword">return</span> compose(</span><br><span class="line">        DarknetConv2D(*args, **no_bias_kwargs),</span><br><span class="line">        BatchNormalization(),</span><br><span class="line">        LeakyReLU(alpha=<span class="number">0.1</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">resblock_body</span>(<span class="params">x, num_filters, num_blocks</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;A series of resblocks starting with a downsampling Convolution2D&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># Darknet uses left and top padding instead of &#x27;same&#x27; mode</span></span><br><span class="line">    x = ZeroPadding2D(((<span class="number">1</span>,<span class="number">0</span>),(<span class="number">1</span>,<span class="number">0</span>)))(x)<span class="comment">#((top_pad,bottom_pad),(left_pad,right_pad))   这里的ZeroPadding2D是为紧跟着的DBL服务的，使其尺寸正好缩小为原来的一半</span></span><br><span class="line">    x = DarknetConv2D_BN_Leaky(num_filters, (<span class="number">3</span>,<span class="number">3</span>), strides=(<span class="number">2</span>,<span class="number">2</span>))(x)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_blocks):</span><br><span class="line">        y = compose(</span><br><span class="line">                DarknetConv2D_BN_Leaky(num_filters//<span class="number">2</span>, (<span class="number">1</span>,<span class="number">1</span>)),</span><br><span class="line">                DarknetConv2D_BN_Leaky(num_filters, (<span class="number">3</span>,<span class="number">3</span>)))(x)</span><br><span class="line">        x = Add()([x,y])</span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">darknet_body</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Darknent body having 52 Convolution2D layers&#x27;&#x27;&#x27;</span></span><br><span class="line">    x = DarknetConv2D_BN_Leaky(<span class="number">32</span>, (<span class="number">3</span>,<span class="number">3</span>))(x)</span><br><span class="line">    x = resblock_body(x, <span class="number">64</span>, <span class="number">1</span>)</span><br><span class="line">    x = resblock_body(x, <span class="number">128</span>, <span class="number">2</span>)</span><br><span class="line">    x = resblock_body(x, <span class="number">256</span>, <span class="number">8</span>)</span><br><span class="line">    x = resblock_body(x, <span class="number">512</span>, <span class="number">8</span>)</span><br><span class="line">    x = resblock_body(x, <span class="number">1024</span>, <span class="number">4</span>)</span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_last_layers</span>(<span class="params">x, num_filters, out_filters</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;6 Conv2D_BN_Leaky layers followed by a Conv2D_linear layer&#x27;&#x27;&#x27;</span></span><br><span class="line">    x = compose(</span><br><span class="line">            DarknetConv2D_BN_Leaky(num_filters, (<span class="number">1</span>,<span class="number">1</span>)),</span><br><span class="line">            DarknetConv2D_BN_Leaky(num_filters*<span class="number">2</span>, (<span class="number">3</span>,<span class="number">3</span>)),</span><br><span class="line">            DarknetConv2D_BN_Leaky(num_filters, (<span class="number">1</span>,<span class="number">1</span>)),</span><br><span class="line">            DarknetConv2D_BN_Leaky(num_filters*<span class="number">2</span>, (<span class="number">3</span>,<span class="number">3</span>)),</span><br><span class="line">            DarknetConv2D_BN_Leaky(num_filters, (<span class="number">1</span>,<span class="number">1</span>)))(x)</span><br><span class="line">    y = compose(</span><br><span class="line">            DarknetConv2D_BN_Leaky(num_filters*<span class="number">2</span>, (<span class="number">3</span>,<span class="number">3</span>)),</span><br><span class="line">            DarknetConv2D(out_filters, (<span class="number">1</span>,<span class="number">1</span>)))(x)</span><br><span class="line">    <span class="keyword">return</span> x, y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">yolo_body</span>(<span class="params">inputs, num_anchors, num_classes</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Create YOLO_V3 model CNN body in Keras.&quot;&quot;&quot;</span></span><br><span class="line">    darknet = Model(inputs, darknet_body(inputs))</span><br><span class="line">    <span class="comment">#第一个特征层y1=(batch_size,13,13,3,85)</span></span><br><span class="line">    x, y1 = make_last_layers(darknet.output, <span class="number">512</span>, num_anchors*(num_classes+<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">    x = compose(</span><br><span class="line">            DarknetConv2D_BN_Leaky(<span class="number">256</span>, (<span class="number">1</span>,<span class="number">1</span>)),</span><br><span class="line">            UpSampling2D(<span class="number">2</span>))(x)</span><br><span class="line">    x = Concatenate()([x,darknet.layers[<span class="number">152</span>].output])<span class="comment">#darknet.layers[152].output]#这里的[152]中的数字为对应层数</span></span><br><span class="line">    <span class="comment">#第二个特征层y2=(batch_size,26,26,3,85)</span></span><br><span class="line">    x, y2 = make_last_layers(x, <span class="number">256</span>, num_anchors*(num_classes+<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">    x = compose(</span><br><span class="line">            DarknetConv2D_BN_Leaky(<span class="number">128</span>, (<span class="number">1</span>,<span class="number">1</span>)),</span><br><span class="line">            UpSampling2D(<span class="number">2</span>))(x)</span><br><span class="line">    x = Concatenate()([x,darknet.layers[<span class="number">92</span>].output])</span><br><span class="line">    <span class="comment">#第三个特征层y3=(batch_size,52,52,3,85)</span></span><br><span class="line">    x, y3 = make_last_layers(x, <span class="number">128</span>, num_anchors*(num_classes+<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Model(inputs, [y1,y2,y3])</span><br></pre></td></tr></table></figure>
 <p>
                 
             
@@ -247,7 +339,403 @@
         
             </div>   
             <div class="article-more-link">
-                <a href="/wiki/hello-world/#more">Read More</a>
+                <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/YOLOv3/#more">Read More</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-Yolo学习/yolov2做出的改进" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">
+            <time datetime="2025-08-15T08:34:27.000Z" itemprop="datePublished">2025-08-15</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/yolov2做出的改进.md'> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/yolov2做出的改进.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/yolov2做出的改进.md'> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/">yolov2做出的改进</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                    
+                    <p><h1 id="yolov1的缺点"><a href="#yolov1的缺点" class="headerlink" title="yolov1的缺点"></a>yolov1的缺点</h1><p>YOLOv1虽然检测速度很快，但是在检测精度上却不如R-CNN系检测方法，YOLOv1在物体定位方面（localization）不够准确，并且召回率（recall）较低。</p>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><h3 id="1-Batch-Normaliza"><a href="#1-Batch-Normaliza" class="headerlink" title="1.Batch Normaliza"></a>1.Batch Normaliza</h3><p>Batch Normalization可以提升模型收敛速度，而且可以起到一定正则化效果，降低模型的过拟合。在YOLOv2中，每个卷积层后面都添加了Batch Normalization层，并且不再使用droput。使用Batch Normalization后，YOLOv2的mAP提升了2.4%。</p>
+<h3 id="2-High-Resolution-Classifier"><a href="#2-High-Resolution-Classifier" class="headerlink" title="2.High Resolution Classifier"></a>2.<strong>High Resolution Classifier</strong></h3><p>用更高分辨率的输入（448x448）之前是（224x224）。</p>
+<h3 id="3-Convolutional-With-Anchor-Boxes"><a href="#3-Convolutional-With-Anchor-Boxes" class="headerlink" title="3.Convolutional With Anchor Boxes"></a>3.<strong>Convolutional With Anchor Boxes</strong></h3><h4 id="以前-yolo1存在的问题"><a href="#以前-yolo1存在的问题" class="headerlink" title="以前 yolo1存在的问题"></a>以前 yolo1存在的问题</h4><p>在YOLOv1中，输入图片最终被划分为$7\times 7$ 网格，每个单元格预测2个边界框。YOLOv1最后采用的是全连接层直接对边界框进行预测，其中边界框的宽与高是相对整张图片大小的，而由于各个图片中存在不同尺度和长宽比（scales and ratios)的物体，YOLOv1在训练过程中学习适应不同物体的形状是比较困难的，这也导致YOLOv1在精确定位方面表现较差。</p>
+<h4 id="改进思路"><a href="#改进思路" class="headerlink" title="改进思路"></a>改进思路</h4><p>用anchor boxes（先验框）</p>
+<p>
+                
+            
+        
+        
+            </div>   
+            <div class="article-more-link">
+                <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolov2%E5%81%9A%E5%87%BA%E7%9A%84%E6%94%B9%E8%BF%9B/#more">Read More</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-Yolo学习/yolo1 思想与输出的形式" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">
+            <time datetime="2025-08-13T10:34:27.000Z" itemprop="datePublished">2025-08-13</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/yolo1 思想与输出的形式.md'> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/yolo1 思想与输出的形式.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/yolo1 思想与输出的形式.md'> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/">yolo1 思想与输出的形式</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                    
+                    <p><h1 id="只说结论"><a href="#只说结论" class="headerlink" title="只说结论"></a>只说结论</h1><p>yolo1 将一张图片分割为S*S个单元格，每个单元格输出<strong>（Bx5+C）</strong>个值。</p>
+<p>解释： </p>
+<p><strong>B</strong>：每个单元格将会预测B个边框。（就是圈B个框框）</p>
+<p><strong>5</strong>：每个圈出来的框框有5个参数 <img src="https://www.zhihu.com/equation?tex=(x,y,w,h,c)" alt="[公式]"> ，其中前四个是相对于单元格的比例（就是0到1之间的数)。c代表该单元格的置信度。用<strong>该单元格含有目标的概率</strong>与<strong>准确度</strong>的<strong>乘积</strong>表示。</p>
+<p><strong>C</strong>: <strong>one-hot</strong>编码的属于C个类别的预测值。</p>
+<p>
+                
+            
+        
+        
+            </div>   
+            <div class="article-more-link">
+                <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E6%80%9D%E6%83%B3%E4%B8%8E%E8%BE%93%E5%87%BA%E7%9A%84%E5%BD%A2%E5%BC%8F/#more">Read More</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-Yolo学习/yolo1 具体网络结构" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">
+            <time datetime="2025-08-12T08:34:27.000Z" itemprop="datePublished">2025-08-12</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/yolo1 具体网络结构.md'> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/yolo1 具体网络结构.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/yolo1 具体网络结构.md'> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/">yolov1 具体网络结构</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                    
+                    <p><h1 id="大体结构"><a href="#大体结构" class="headerlink" title="大体结构"></a>大体结构</h1><p>Yolo采用卷积网络来提取特征，然后使用全连接层来得到预测值。</p>
+<p><strong>卷积层：</strong>主要使用1x1卷积来做channle reduction，然后紧跟3x3卷积。</p>
+<p>卷积层和全连接层，采用Leaky ReLU激活函数： <img src="https://www.zhihu.com/equation?tex=max(x,+0.1x)" alt="[公式]"> </p>
+<p>但是最后一层却采用线性激活函数。</p>
+<h2 id="直接上图"><a href="#直接上图" class="headerlink" title="直接上图"></a>直接上图</h2><p><img src="https://pic4.zhimg.com/80/v2-5d099287b1237fa975b1c19bacdfc07f_720w.jpg" alt="img"></p>
+<p>
+                
+            
+        
+        
+            </div>   
+            <div class="article-more-link">
+                <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/yolo1%20%E5%85%B7%E4%BD%93%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/#more">Read More</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-Yolo学习/anchor boxes" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Yolo%E5%AD%A6%E4%B9%A0/">Yolo学习</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">
+            <time datetime="2025-08-10T08:34:27.000Z" itemprop="datePublished">2025-08-10</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/raw/writing/source/_posts/Yolo学习/anchor boxes.md'> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/edit/writing/source/_posts/Yolo学习/anchor boxes.md'> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="noopener" href='https://github.com/zthxxx/Wiki-site/commits/writing/source/_posts/Yolo学习/anchor boxes.md'> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/">anchor box（先验框）</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                    
+                    <p><h1 id="anchor-box（先验框）"><a href="#anchor-box（先验框）" class="headerlink" title="anchor box（先验框）"></a>anchor box（先验框）</h1><p>anchor （锚; 给以安全感的人(或物); 精神支柱; 顶梁柱;）</p>
+<h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>对象检测中存在一个问题就是每个格子只能预测一个对象，如果想让一个格子检测出多个对象，用anchor box</p>
+<h2 id="以前的做法"><a href="#以前的做法" class="headerlink" title="以前的做法"></a>以前的做法</h2><p>假设我们有这样一张图片，对于这个例子，我们使用3x3的网格，可以观察到，行人和汽车的中心几乎在同一个网格，然而我们以前的方法一个格子只能预测一个对象，而且对于y输出的的向量量𝑦 &#x3D; [𝑝𝑐 𝑏𝑥 𝑏𝑦 𝑏ℎ 𝑏𝑤 𝑐1 𝑐2 𝑐3 ]，你可以检测这三个类别，行人、汽车和摩托车，它将无法输出检测结果，所以我必须从两个检测结果中选一个，这便影响了模型性能，导致一些对象被丢弃无法检测出来。<br><img src="https://img-blog.csdnimg.cn/20200208232504699.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDYyMzYzNw==,size_16,color_FFFFFF,t_70" alt="img"></p>
+<h2 id="anchor-box-引入"><a href="#anchor-box-引入" class="headerlink" title="anchor box 引入"></a>anchor box 引入</h2><p><img src="https://img-blog.csdnimg.cn/2020020823275943.png" alt="img"></p>
+<p>预先定义两个不同形状的 anchor box，或者 anchor box 形状</p>
+<p>
+                
+            
+        
+        
+            </div>   
+            <div class="article-more-link">
+                <a href="/wiki/Yolo%E5%AD%A6%E4%B9%A0/anchor%20boxes/#more">Read More</a>
             </div>
         
         <footer class="article-footer">
